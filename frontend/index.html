@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LLM Agent Chatbot</title>
+    <link rel="icon" href="data:," />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 font-[Inter] text-gray-800">
+    <!-- Fullscreen layout -->
+    <div class="flex flex-col items-center justify-center min-h-screen px-4">
+      <!-- Header -->
+      <header class="mb-6 text-center">
+        <h1 class="text-3xl font-bold text-gray-900 drop-shadow-sm">
+          🤖 LLM Agent Chatbot
+        </h1>
+        <p class="mt-2 text-gray-600 text-base">
+          Your AI assistant powered by LangChain + OpenAI
+        </p>
+      </header>
+
+      <!-- Chat container -->
+      <main
+        id="root"
+        class="w-full max-w-2xl flex flex-col bg-white/90 rounded-2xl shadow-xl border border-gray-200 p-4 backdrop-blur-sm"
+      ></main>
+
+      <!-- Footer -->
+      <footer class="mt-6 text-sm text-gray-500">
+        Built with ❤️ using LangChain + FastAPI + React
+      </footer>
+    </div>
+
+    <!-- React entrypoint -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

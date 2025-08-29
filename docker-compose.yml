@@ -1,0 +1,16 @@
+services:
+  api:
+    build: ./backend
+    ports: ["8000:8000"]
+    env_file: .env
+    volumes:
+      - ./backend/data:/app/data
+  web:
+    working_dir: /web
+    image: node:20-alpine
+    command: sh -c "npm ci && npm run build && npm run preview -- --host 0.0.0.0"
+    ports: ["5173:5173"]
+    volumes:
+      - ./frontend:/web
+    environment:
+      - VITE_API_URL=http://localhost:8000/api/chat
