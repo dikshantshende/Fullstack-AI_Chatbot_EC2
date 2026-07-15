@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: torq-chatbot-backend
+    env: python
+    buildCommand: "./backend/scripts/build.sh"
+    startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.10.12"
+      - key: CORS_ALLOW_ORIGINS
+        value: "*"
+      - key: GOOGLE_API_KEY
+        sync: false

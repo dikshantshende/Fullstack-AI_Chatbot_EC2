@@ -86,3 +86,31 @@ async def upload_file(file: UploadFile = File(...)):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+
+# Mount static files and handle SPA routing
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend/dist"))
+
+if os.path.exists(frontend_dist):
+    # Mount assets directly if they exist in the dist folder
+    assets_path = os.path.join(frontend_dist, "assets")
+    if os.path.exists(assets_path):
+        app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        # Allow API routes to pass through (they should already be matched by earlier definitions, 
+        # but just in case we don't want to swallow 404s for the API)
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="API route not found")
+            
+        file_path = os.path.join(frontend_dist, full_path)
+        # Serve exact file if it exists (e.g. favicon.ico, vite.svg)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+            
+        # Fallback to index.html for React Router / SPA
+        return FileResponse(os.path.join(frontend_dist, "index.html"))
+
