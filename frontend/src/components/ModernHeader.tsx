@@ -1,4 +1,5 @@
-import { Sparkles, Bot, Settings, Menu } from 'lucide-react'
+import { Sparkles, Bot, Settings, Menu, LogOut } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 interface ModernHeaderProps {
   onToggleSidebar: () => void
@@ -6,6 +7,10 @@ interface ModernHeaderProps {
 }
 
 export default function ModernHeader({ onToggleSidebar, sidebarOpen }: ModernHeaderProps) {
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+  }
+
   return (
     <div className="modern-header">
       <div className="header-left">
@@ -28,6 +33,9 @@ export default function ModernHeader({ onToggleSidebar, sidebarOpen }: ModernHea
       <div className="header-right">
         <button className="settings-btn" title="Settings">
           <Settings />
+        </button>
+        <button className="settings-btn" title="Sign Out" onClick={handleSignOut}>
+          <LogOut />
         </button>
       </div>
     </div>

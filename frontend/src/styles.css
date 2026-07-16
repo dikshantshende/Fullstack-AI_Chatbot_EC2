@@ -845,7 +845,7 @@ body {
   background: var(--bg-card);
   padding: var(--space-4);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .chat-input-area::before {

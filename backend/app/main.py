@@ -1,10 +1,11 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from .settings import settings
 from .models import ChatRequest, ChatResponse
 from .agent import get_agent
 from .rag import build_or_load_vectorstore
 from .middleware import setup_middleware
+from .auth import get_current_user
 import os
 import uuid
 
@@ -35,7 +36,7 @@ def health():
     return {"status": "ok", "app": settings.app_name}
 
 @app.post("/api/chat", response_model=ChatResponse)
-def chat(req: ChatRequest):
+def chat(req: ChatRequest, user: dict = Depends(get_current_user)):
     if not settings.google_api_key:
         raise HTTPException(status_code=500, detail="GOOGLE_API_KEY not configured")
     
@@ -60,7 +61,7 @@ def chat(req: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/upload")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
     """Upload a file and return file info"""
     try:
         # Create uploads directory if it doesn't exist

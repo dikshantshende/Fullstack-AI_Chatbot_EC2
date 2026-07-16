@@ -11,6 +11,7 @@ class Settings(BaseModel):
     app_name: str = "LLM Agent Chatbot"
     debug: bool = os.getenv("DEBUG", "false").lower() == "true"
     google_api_key: str | None = os.getenv("GOOGLE_API_KEY")
+    supabase_jwt_secret: str | None = os.getenv("SUPABASE_JWT_SECRET")
     model: str = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
     embeddings_model: str = os.getenv("EMBEDDINGS_MODEL", "models/embedding-001")
     port: int = int(os.getenv("PORT", "8000"))

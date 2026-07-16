@@ -1,3 +1,5 @@
+import { supabase } from './supabase';
+
 export type Message = {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -8,16 +10,33 @@ export type Message = {
 const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:8000' : '');
 
 export async function chat(messages: Message[]) {
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  
+  if (session?.access_token) {
+    headers['Authorization'] = `Bearer ${session.access_token}`;
+  }
+
   const response = await fetch(`${API_URL}/api/chat`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify({ messages }),
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch response');
+    let errorMessage = 'Server responded with an error';
+    try {
+      const errorData = await response.json();
+      if (errorData && errorData.detail) {
+        errorMessage = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
+      }
+    } catch (e) {
+      // Ignore if not JSON
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
